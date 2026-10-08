@@ -513,26 +513,31 @@ export const CustomerHome: React.FC<CustomerHomeProps> = ({
       {/* 6. INSTANT COURIER DISPATCH CARD */}
       <div className="px-3 sm:px-0">
         <div className="bg-white rounded-3xl p-5 border border-neutral-200/90 shadow-2xs space-y-3">
-          <div className="flex items-center gap-3">
-            <div className="w-12 h-12 rounded-2xl bg-red-50 text-red-600 flex items-center justify-center text-2xl font-black">
-              📦
-            </div>
-            <div>
-              <div className="flex items-center gap-1.5">
-                <span className="text-[10px] font-black uppercase text-red-600 tracking-wider">
-                  EXPRESS INSTANT COURIER
-                </span>
-                <span className="text-xs text-neutral-400">•</span>
-                <span className="text-xs font-bold text-green-700">From ₹40</span>
+          <div className="flex flex-col sm:flex-row sm:items-center gap-3">
+            <div className="flex items-center gap-3 min-w-0 flex-1">
+              <div className="w-12 h-12 rounded-2xl bg-red-50 text-red-600 flex items-center justify-center text-2xl font-black shrink-0">
+                📦
               </div>
-              <h3 className="text-sm sm:text-base font-black text-neutral-900">
-                Send Anything Across Town in 20 Minutes
-              </h3>
+              <div className="min-w-0">
+                <h3 className="text-sm sm:text-base font-black text-neutral-900">Send a Parcel</h3>
+                <p className="text-xs text-neutral-600">Send packages across your city with QuickGo.</p>
+              </div>
             </div>
+            <button
+              type="button"
+              id="btn-send-parcel"
+              onClick={() => {
+                const srv = services.find((s) => s.id === 'parcel') || services[0];
+                onSelectService(srv);
+              }}
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-1.5 px-5 py-2.5 rounded-2xl bg-[#171717] text-white text-sm font-bold hover:bg-black transition-colors active:scale-95 shrink-0"
+            >
+              Send now <ArrowRight className="w-4 h-4" />
+            </button>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 pt-1">
-            {services.slice(0, 3).map((srv) => (
+            {services.filter((s) => s.id !== 'parcel').slice(0, 3).map((srv) => (
               <div
                 key={srv.id}
                 onClick={() => onSelectService(srv)}

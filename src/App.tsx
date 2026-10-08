@@ -15,6 +15,8 @@ import { CustomerHome } from './views/customer/CustomerHome';
 import { CustomerCategories } from './views/customer/CustomerCategories';
 import { CustomerSearch } from './views/customer/CustomerSearch';
 import { CustomerCreateDelivery } from './views/customer/CustomerCreateDelivery';
+import { CustomerParcel } from './views/customer/CustomerParcel';
+import { PARCEL_SERVICE_ID } from './services/parcelService';
 import { CustomerSearchingPartner } from './views/customer/CustomerSearchingPartner';
 import { CustomerTrack } from './views/customer/CustomerTrack';
 import { CustomerOrders } from './views/customer/CustomerOrders';
@@ -79,6 +81,7 @@ const AppContent: React.FC = () => {
     | 'categories'
     | 'search'
     | 'create'
+    | 'parcel'
     | 'searching'
     | 'track'
     | 'orders'
@@ -109,7 +112,8 @@ const AppContent: React.FC = () => {
 
   const handleSelectService = (serviceId: string) => {
     setSelectedServiceId(serviceId);
-    setCustomerSubView('create');
+    // Parcel has its own dedicated flow; other services keep the generic delivery form.
+    setCustomerSubView(serviceId === PARCEL_SERVICE_ID ? 'parcel' : 'create');
   };
 
   const handleOrderCreated = (order: Order) => {
@@ -139,7 +143,7 @@ const AppContent: React.FC = () => {
       setCustomerTab('categories');
     } else if (customerSubView === 'search') {
       setCustomerTab('search');
-    } else if (customerSubView === 'create') {
+    } else if (customerSubView === 'create' || customerSubView === 'parcel') {
       setCustomerTab('create');
     } else if (customerSubView === 'track' || customerSubView === 'searching') {
       setCustomerTab('track');
@@ -172,7 +176,7 @@ const AppContent: React.FC = () => {
           onNavigateToBooking={() => {
             setShowLanding(false);
             setRole('customer');
-            setCustomerSubView('create');
+            setCustomerSubView('parcel');
           }}
         />
       </div>
@@ -210,7 +214,7 @@ const AppContent: React.FC = () => {
             if (tab === 'home') setCustomerSubView('home');
             else if (tab === 'categories') setCustomerSubView('categories');
             else if (tab === 'search') setCustomerSubView('search');
-            else if (tab === 'create') setCustomerSubView('create');
+            else if (tab === 'create') setCustomerSubView('parcel');
             else if (tab === 'orders') setCustomerSubView('orders');
             else if (tab === 'track') setCustomerSubView('track');
             else if (tab === 'passes') setCustomerSubView('passes');
@@ -220,10 +224,7 @@ const AppContent: React.FC = () => {
         >
           {customerSubView === 'home' && (
             <CustomerHome
-              onSelectService={(service) => {
-                setSelectedServiceId(service.id);
-                setCustomerSubView('create');
-              }}
+              onSelectService={(service) => handleSelectService(service.id)}
               onTrackOrder={(orderId) => {
                 setActiveTrackingOrderId(orderId);
                 setCustomerSubView('track');
@@ -269,6 +270,13 @@ const AppContent: React.FC = () => {
             />
           )}
 
+          {customerSubView === 'parcel' && (
+            <CustomerParcel
+              service={services.find((s) => s.id === PARCEL_SERVICE_ID) || null}
+              onBack={() => setCustomerSubView('home')}
+            />
+          )}
+
           {customerSubView === 'searching' && activeTrackingOrderId && (
             <CustomerSearchingPartner
               orderId={activeTrackingOrderId}
@@ -299,7 +307,7 @@ const AppContent: React.FC = () => {
                 setActiveTrackingOrderId(orderId);
                 setCustomerSubView('track');
               }}
-              onCreateNew={() => setCustomerSubView('create')}
+              onCreateNew={() => setCustomerSubView('parcel')}
             />
           )}
 
