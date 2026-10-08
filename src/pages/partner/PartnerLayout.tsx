@@ -79,7 +79,7 @@ export const PartnerLayout: React.FC<PartnerLayoutProps> = ({
 
             {/* Online / Offline Toggle Button */}
             <button
-              onClick={togglePartnerOnline}
+              onClick={() => togglePartnerOnline()}
               className={`flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-extrabold transition-all shadow-xs ${
                 currentPartner.isOnline
                   ? 'bg-green-600 hover:bg-green-700 text-white shadow-green-600/20'

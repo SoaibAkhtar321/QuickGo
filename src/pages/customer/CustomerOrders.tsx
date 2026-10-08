@@ -175,7 +175,7 @@ export const CustomerOrders: React.FC<CustomerOrdersProps> = ({
               return (
                 <div
                   key={order.id}
-                  onClick={() => onSelectOrder(order)}
+                  onClick={() => onSelectOrder(order.id)}
                   className="bg-white rounded-3xl p-5 border border-neutral-200 hover:border-[#FF6B35]/70 hover:shadow-md transition-all cursor-pointer flex flex-col justify-between space-y-3.5"
                 >
                   <div className="flex items-center justify-between">

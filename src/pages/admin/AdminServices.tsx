@@ -91,19 +91,21 @@ export const AdminServices: React.FC = () => {
 
                 <div className="flex items-center gap-2">
                   <button
-                    onClick={() =>
+                    onClick={() => {
+                      const newStatus = !(service.enabled ?? service.active);
                       updateService({
                         ...service,
-                        active: !service.active,
-                      })
-                    }
+                        enabled: newStatus,
+                        active: newStatus,
+                      });
+                    }}
                     className={`px-2.5 py-1 rounded-full text-[10px] font-bold border transition-colors ${
-                      service.active
+                      (service.enabled ?? service.active)
                         ? 'bg-green-50 text-green-700 border-green-200'
                         : 'bg-neutral-100 text-neutral-500 border-neutral-200'
                     }`}
                   >
-                    {service.active ? 'ACTIVE' : 'DISABLED'}
+                    {(service.enabled ?? service.active) ? 'ACTIVE' : 'DISABLED'}
                   </button>
 
                   <button

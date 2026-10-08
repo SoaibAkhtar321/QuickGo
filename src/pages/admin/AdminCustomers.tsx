@@ -82,7 +82,7 @@ export const AdminCustomers: React.FC = () => {
                     <div className="text-neutral-800 font-mono">{cust.phone}</div>
                     <div className="text-[11px] text-neutral-400">{cust.email}</div>
                   </td>
-                  <td className="py-3.5 px-6 text-neutral-600 font-medium">{cust.createdAt}</td>
+                  <td className="py-3.5 px-6 text-neutral-600 font-medium">{cust.joinedDate || cust.createdAt || 'Recent'}</td>
                   <td className="py-3.5 px-6 font-bold text-neutral-900">
                     {cust.totalOrders} Orders
                   </td>

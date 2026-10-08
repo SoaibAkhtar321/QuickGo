@@ -139,9 +139,9 @@ export const AdminOrderDetail: React.FC<AdminOrderDetailProps> = ({ order, onBac
               </div>
             </div>
 
-            {order.instructions && (
+            {(order.deliveryInstructions || order.instructions) && (
               <div className="p-3 bg-[#FFF9F5] border border-[#FF6B35]/20 rounded-xl text-neutral-700">
-                <strong>Customer Instructions:</strong> {order.instructions}
+                <strong>Customer Instructions:</strong> {order.deliveryInstructions || order.instructions}
               </div>
             )}
           </div>

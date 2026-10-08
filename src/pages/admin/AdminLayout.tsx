@@ -63,7 +63,7 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({
   const onlinePartnersCount = partners.filter((p) => p && p.isOnline).length;
   const ticketList = supportTickets || tickets || [];
   const openTicketsCount = ticketList.filter(
-    (t) => t && (t.status === 'OPEN' || t.status === 'open' || t.status === 'IN_PROGRESS')
+    (t) => t && (t.status === 'OPEN' || t.status === 'IN_PROGRESS')
   ).length;
 
   const navItems: { id: AdminTab; label: string; icon: any; badge?: number | string }[] = [

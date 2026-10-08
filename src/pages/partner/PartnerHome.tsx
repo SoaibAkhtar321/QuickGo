@@ -127,7 +127,7 @@ export const PartnerHome: React.FC<PartnerHomeProps> = ({ onOpenActiveJob, onOpe
         <div className="flex items-center gap-3">
           <button
             id="partner-toggle-online-btn"
-            onClick={togglePartnerOnline}
+            onClick={() => togglePartnerOnline()}
             className={`px-5 py-3 rounded-2xl border font-black text-xs flex items-center gap-2.5 transition-all shadow-xs active:scale-95 ${
               currentPartner.isOnline
                 ? 'bg-green-500 hover:bg-green-600 text-white border-green-600 shadow-green-500/20'
@@ -148,7 +148,7 @@ export const PartnerHome: React.FC<PartnerHomeProps> = ({ onOpenActiveJob, onOpe
             <span>You are currently <strong>OFFLINE</strong>. Toggle online to receive live delivery alerts in Noida.</span>
           </div>
           <button
-            onClick={togglePartnerOnline}
+            onClick={() => togglePartnerOnline()}
             className="px-3.5 py-1.5 bg-amber-600 text-white rounded-xl font-black text-xs hover:bg-amber-700 shadow-2xs"
           >
             Go Online

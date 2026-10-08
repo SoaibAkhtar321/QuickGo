@@ -215,7 +215,7 @@ export const AdminPricing: React.FC = () => {
                     <td className="py-3.5 px-6">
                       <input
                         type="number"
-                        value={service.minimumFare}
+                        value={service.minFare ?? service.minimumFare ?? 0}
                         onChange={(e) =>
                           handlePriceChange(service.id, 'minimumFare', Number(e.target.value))
                         }

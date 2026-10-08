@@ -40,12 +40,12 @@ export const AdminSupport: React.FC = () => {
               {ticketList.map((ticket) => {
                 const isResolved =
                   ticket.status === 'RESOLVED' ||
-                  ticket.status === 'resolved' ||
-                  (ticket.status as string) === 'Closed';
+                  (ticket.status as unknown as string).toLowerCase() === 'resolved' ||
+                  (ticket.status as unknown as string) === 'Closed';
                 const isHighPriority =
                   ticket.priority === 'HIGH' ||
                   ticket.priority === 'URGENT' ||
-                  (ticket.priority as string) === 'high';
+                  (ticket.priority as unknown as string).toLowerCase() === 'high';
                 const issueTitle = ticket.issue || (ticket as any).subject || 'Delivery Support';
                 const messageDesc =
                   ticket.messages?.[0]?.text ||

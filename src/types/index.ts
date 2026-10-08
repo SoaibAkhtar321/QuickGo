@@ -59,9 +59,11 @@ export interface ServiceConfig {
   baseFare: number;
   perKm: number;
   minFare: number;
+  minimumFare?: number;
   platformFee: number;
   taxRate: number; // e.g. 0.05
   enabled: boolean;
+  active?: boolean;
   estimatedTimePerKm: number; // minutes per km
 }
 
@@ -193,6 +195,7 @@ export interface Order {
   packageType: string;
   packageWeight?: string;
   deliveryInstructions?: string;
+  instructions?: string;
   deliveryType: 'instant' | 'scheduled';
   scheduledTime?: string;
   pricing: PricingBreakdown;
@@ -231,6 +234,7 @@ export interface Customer {
   totalSpent: number;
   status: 'ACTIVE' | 'SUSPENDED';
   joinedDate: string;
+  createdAt?: string;
   activePassId?: string;
   savedAddresses?: CustomerAddress[];
 }

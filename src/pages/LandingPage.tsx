@@ -23,9 +23,14 @@ import {
 interface LandingPageProps {
   onSelectRole: (role: 'customer' | 'partner' | 'business' | 'admin') => void;
   onNavigateToBooking: () => void;
+  onGetStarted?: () => void;
 }
 
-export const LandingPage: React.FC<LandingPageProps> = ({ onSelectRole, onNavigateToBooking }) => {
+export const LandingPage: React.FC<LandingPageProps> = ({
+  onSelectRole,
+  onNavigateToBooking,
+  onGetStarted,
+}) => {
   const { services } = useApp();
 
   const serviceIcons: { [key: string]: any } = {

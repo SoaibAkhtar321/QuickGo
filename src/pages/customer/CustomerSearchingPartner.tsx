@@ -5,12 +5,16 @@ import { Bike, CheckCircle2, Navigation, ArrowRight, ShieldCheck } from 'lucide-
 
 interface CustomerSearchingPartnerProps {
   orderId: string;
-  onTrack: (orderId: string) => void;
+  onTrack?: (orderId: string) => void;
+  onPartnerFound?: (orderId: string) => void;
+  onCancel?: () => void;
 }
 
 export const CustomerSearchingPartner: React.FC<CustomerSearchingPartnerProps> = ({
   orderId,
   onTrack,
+  onPartnerFound,
+  onCancel,
 }) => {
   const { orders, partners, acceptOrder, currentPartner } = useApp();
   const [isFound, setIsFound] = useState(false);
@@ -102,7 +106,10 @@ export const CustomerSearchingPartner: React.FC<CustomerSearchingPartnerProps> =
 
           <button
             id="btn-partner-found-track"
-            onClick={() => onTrack(order.id)}
+            onClick={() => {
+              if (onPartnerFound) onPartnerFound(order.id);
+              else if (onTrack) onTrack(order.id);
+            }}
             className="w-full bg-[#FF6B35] hover:bg-[#E85A2A] text-white text-sm font-extrabold py-3.5 rounded-2xl flex items-center justify-center gap-2 shadow-lg shadow-[#FF6B35]/25 transition-all active:scale-[0.98]"
           >
             <Navigation className="w-4 h-4" />

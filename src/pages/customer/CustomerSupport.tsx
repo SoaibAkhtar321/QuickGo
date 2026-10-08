@@ -1,8 +1,12 @@
 import React, { useState } from 'react';
 import { useApp } from '../../store/AppContext';
-import { HelpCircle, MessageSquare, Phone, ChevronDown, CheckCircle2, Send } from 'lucide-react';
+import { HelpCircle, MessageSquare, Phone, ChevronDown, CheckCircle2, Send, ArrowLeft } from 'lucide-react';
 
-export const CustomerSupport: React.FC = () => {
+interface CustomerSupportProps {
+  onBack?: () => void;
+}
+
+export const CustomerSupport: React.FC<CustomerSupportProps> = ({ onBack }) => {
   const { createSupportTicket } = useApp();
   const [subject, setSubject] = useState('');
   const [description, setDescription] = useState('');

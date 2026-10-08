@@ -1,64 +1,66 @@
+'use client';
+
 import React, { useState, useEffect } from 'react';
 import { AppProvider, useApp } from './store/AppContext';
 import { RoleSwitcher } from './components/ui/RoleSwitcher';
 import { CallModal } from './components/ui/CallModal';
 import { ChatModal } from './components/ui/ChatModal';
 import { NotificationToast } from './components/ui/NotificationToast';
-import { LandingPage } from './pages/LandingPage';
-import { RoleLoginPage } from './pages/RoleLoginPage';
+import { LandingPage } from './views/LandingPage';
+import { RoleLoginPage } from './views/RoleLoginPage';
 
 // Customer Pages & Quick Commerce Components
-import { CustomerLayout, CustomerTab } from './pages/customer/CustomerLayout';
-import { CustomerHome } from './pages/customer/CustomerHome';
-import { CustomerCategories } from './pages/customer/CustomerCategories';
-import { CustomerSearch } from './pages/customer/CustomerSearch';
-import { CustomerCreateDelivery } from './pages/customer/CustomerCreateDelivery';
-import { CustomerSearchingPartner } from './pages/customer/CustomerSearchingPartner';
-import { CustomerTrack } from './pages/customer/CustomerTrack';
-import { CustomerOrders } from './pages/customer/CustomerOrders';
-import { CustomerOrderDetail } from './pages/customer/CustomerOrderDetail';
-import { CustomerPasses } from './pages/customer/CustomerPasses';
-import { CustomerProfile } from './pages/customer/CustomerProfile';
-import { CustomerSupport } from './pages/customer/CustomerSupport';
+import { CustomerLayout, CustomerTab } from './views/customer/CustomerLayout';
+import { CustomerHome } from './views/customer/CustomerHome';
+import { CustomerCategories } from './views/customer/CustomerCategories';
+import { CustomerSearch } from './views/customer/CustomerSearch';
+import { CustomerCreateDelivery } from './views/customer/CustomerCreateDelivery';
+import { CustomerSearchingPartner } from './views/customer/CustomerSearchingPartner';
+import { CustomerTrack } from './views/customer/CustomerTrack';
+import { CustomerOrders } from './views/customer/CustomerOrders';
+import { CustomerOrderDetail } from './views/customer/CustomerOrderDetail';
+import { CustomerPasses } from './views/customer/CustomerPasses';
+import { CustomerProfile } from './views/customer/CustomerProfile';
+import { CustomerSupport } from './views/customer/CustomerSupport';
 
 import { CustomerCartDrawer } from './components/commerce/CustomerCartDrawer';
 import { ProductDetailModal } from './components/commerce/ProductDetailModal';
 import { MobileCartBar } from './components/commerce/MobileCartBar';
 
 // Partner Pages
-import { PartnerLayout, PartnerTab } from './pages/partner/PartnerLayout';
-import { PartnerHome } from './pages/partner/PartnerHome';
-import { PartnerActiveDelivery } from './pages/partner/PartnerActiveDelivery';
-import { PartnerEarnings } from './pages/partner/PartnerEarnings';
-import { PartnerHistory } from './pages/partner/PartnerHistory';
-import { PartnerProfile } from './pages/partner/PartnerProfile';
+import { PartnerLayout, PartnerTab } from './views/partner/PartnerLayout';
+import { PartnerHome } from './views/partner/PartnerHome';
+import { PartnerActiveDelivery } from './views/partner/PartnerActiveDelivery';
+import { PartnerEarnings } from './views/partner/PartnerEarnings';
+import { PartnerHistory } from './views/partner/PartnerHistory';
+import { PartnerProfile } from './views/partner/PartnerProfile';
 
 // Business (Merchant) Pages
-import { BusinessLayout, BusinessTab } from './pages/business/BusinessLayout';
-import { BusinessDashboard } from './pages/business/BusinessDashboard';
-import { BusinessOrders } from './pages/business/BusinessOrders';
-import { BusinessCatalog } from './pages/business/BusinessCatalog';
-import { BusinessDispatch } from './pages/business/BusinessDispatch';
-import { BusinessCustomers } from './pages/business/BusinessCustomers';
-import { BusinessSettlement } from './pages/business/BusinessSettlement';
-import { BusinessProfile } from './pages/business/BusinessProfile';
+import { BusinessLayout, BusinessTab } from './views/business/BusinessLayout';
+import { BusinessDashboard } from './views/business/BusinessDashboard';
+import { BusinessOrders } from './views/business/BusinessOrders';
+import { BusinessCatalog } from './views/business/BusinessCatalog';
+import { BusinessDispatch } from './views/business/BusinessDispatch';
+import { BusinessCustomers } from './views/business/BusinessCustomers';
+import { BusinessSettlement } from './views/business/BusinessSettlement';
+import { BusinessProfile } from './views/business/BusinessProfile';
 
 // Admin Pages
-import { AdminLayout, AdminTab } from './pages/admin/AdminLayout';
-import { AdminDashboard } from './pages/admin/AdminDashboard';
-import { AdminOrders } from './pages/admin/AdminOrders';
-import { AdminOrderDetail } from './pages/admin/AdminOrderDetail';
-import { AdminLiveMap } from './pages/admin/AdminLiveMap';
-import { AdminCustomers } from './pages/admin/AdminCustomers';
-import { AdminPartners } from './pages/admin/AdminPartners';
-import { AdminBusinesses } from './pages/admin/AdminBusinesses';
-import { AdminPasses } from './pages/admin/AdminPasses';
-import { AdminServices } from './pages/admin/AdminServices';
-import { AdminPricing } from './pages/admin/AdminPricing';
-import { AdminPayments } from './pages/admin/AdminPayments';
-import { AdminAnalytics } from './pages/admin/AdminAnalytics';
-import { AdminSupport } from './pages/admin/AdminSupport';
-import { AdminSettings } from './pages/admin/AdminSettings';
+import { AdminLayout, AdminTab } from './views/admin/AdminLayout';
+import { AdminDashboard } from './views/admin/AdminDashboard';
+import { AdminOrders } from './views/admin/AdminOrders';
+import { AdminOrderDetail } from './views/admin/AdminOrderDetail';
+import { AdminLiveMap } from './views/admin/AdminLiveMap';
+import { AdminCustomers } from './views/admin/AdminCustomers';
+import { AdminPartners } from './views/admin/AdminPartners';
+import { AdminBusinesses } from './views/admin/AdminBusinesses';
+import { AdminPasses } from './views/admin/AdminPasses';
+import { AdminServices } from './views/admin/AdminServices';
+import { AdminPricing } from './views/admin/AdminPricing';
+import { AdminPayments } from './views/admin/AdminPayments';
+import { AdminAnalytics } from './views/admin/AdminAnalytics';
+import { AdminSupport } from './views/admin/AdminSupport';
+import { AdminSettings } from './views/admin/AdminSettings';
 
 import { Order, Product, UserRole } from './types';
 

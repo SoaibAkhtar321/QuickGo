@@ -1,3 +1,5 @@
+'use client';
+
 import React, { createContext, useContext, useEffect, useState, useRef, useCallback } from 'react';
 import {
   Business,
@@ -157,12 +159,13 @@ interface AppContextType {
   updatePartnerStatus: (partnerId: string, status: 'ACTIVE' | 'SUSPENDED') => void;
   updateTicketStatus: (ticketId: string, status: 'OPEN' | 'IN_PROGRESS' | 'RESOLVED') => void;
   resolveSupportTicket: (ticketId: string) => void;
+  createSupportTicket: (subject: string, description: string, priority?: string) => void;
   sendMessage: (
     orderId: string,
     text: string,
     senderRole: 'customer' | 'partner' | 'business' | 'admin'
   ) => void;
-  startCall: (partner: DeliveryPartner) => void;
+  startCall: (partner: DeliveryPartner | any) => void;
   endCall: () => void;
   openChat: (orderId: string) => void;
   closeChat: () => void;
@@ -207,16 +210,43 @@ const AppContext = createContext<AppContextType | undefined>(undefined);
 
 const STORAGE_KEY = 'quickgo_app_v3';
 
+const getStorageItem = (key: string): string | null => {
+  if (typeof window === 'undefined') return null;
+  try {
+    return localStorage.getItem(key);
+  } catch {
+    return null;
+  }
+};
+
+const setStorageItem = (key: string, value: string): void => {
+  if (typeof window === 'undefined') return;
+  try {
+    localStorage.setItem(key, value);
+  } catch {
+    // Ignore storage write error
+  }
+};
+
+const removeStorageItem = (key: string): void => {
+  if (typeof window === 'undefined') return;
+  try {
+    localStorage.removeItem(key);
+  } catch {
+    // Ignore storage remove error
+  }
+};
+
 export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [currentRole, setCurrentRoleState] = useState<UserRole>(() => {
-    const saved = localStorage.getItem('quickgo_role');
+    const saved = getStorageItem('quickgo_role');
     if (saved === 'business_partner') return 'business';
     return (saved as UserRole) || 'customer';
   });
 
   const [orders, setOrders] = useState<Order[]>(() => {
     try {
-      const saved = localStorage.getItem(`${STORAGE_KEY}_orders`);
+      const saved = getStorageItem(`${STORAGE_KEY}_orders`);
       return saved ? JSON.parse(saved) : INITIAL_ORDERS;
     } catch {
       return INITIAL_ORDERS;
@@ -225,7 +255,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
   const [services, setServices] = useState<ServiceConfig[]>(() => {
     try {
-      const saved = localStorage.getItem(`${STORAGE_KEY}_services`);
+      const saved = getStorageItem(`${STORAGE_KEY}_services`);
       return saved ? JSON.parse(saved) : INITIAL_SERVICES;
     } catch {
       return INITIAL_SERVICES;
@@ -234,7 +264,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
   const [customers, setCustomers] = useState<Customer[]>(() => {
     try {
-      const saved = localStorage.getItem(`${STORAGE_KEY}_customers`);
+      const saved = getStorageItem(`${STORAGE_KEY}_customers`);
       return saved ? JSON.parse(saved) : INITIAL_CUSTOMERS;
     } catch {
       return INITIAL_CUSTOMERS;
@@ -243,7 +273,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
   const [partners, setPartners] = useState<DeliveryPartner[]>(() => {
     try {
-      const saved = localStorage.getItem(`${STORAGE_KEY}_partners`);
+      const saved = getStorageItem(`${STORAGE_KEY}_partners`);
       return saved ? JSON.parse(saved) : INITIAL_PARTNERS;
     } catch {
       return INITIAL_PARTNERS;
@@ -252,7 +282,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
   const [businesses, setBusinesses] = useState<Business[]>(() => {
     try {
-      const saved = localStorage.getItem(`${STORAGE_KEY}_businesses`);
+      const saved = getStorageItem(`${STORAGE_KEY}_businesses`);
       return saved ? JSON.parse(saved) : INITIAL_BUSINESSES;
     } catch {
       return INITIAL_BUSINESSES;
@@ -262,7 +292,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const [passPlans] = useState<PassPlan[]>(INITIAL_PASS_PLANS);
   const [customerPasses, setCustomerPasses] = useState<CustomerPass[]>(() => {
     try {
-      const saved = localStorage.getItem(`${STORAGE_KEY}_customer_passes`);
+      const saved = getStorageItem(`${STORAGE_KEY}_customer_passes`);
       return saved ? JSON.parse(saved) : INITIAL_CUSTOMER_PASSES;
     } catch {
       return INITIAL_CUSTOMER_PASSES;
@@ -271,7 +301,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
   const [payments, setPayments] = useState<PaymentTransaction[]>(() => {
     try {
-      const saved = localStorage.getItem(`${STORAGE_KEY}_payments`);
+      const saved = getStorageItem(`${STORAGE_KEY}_payments`);
       return saved ? JSON.parse(saved) : INITIAL_PAYMENTS;
     } catch {
       return INITIAL_PAYMENTS;
@@ -280,7 +310,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
   const [tickets, setTickets] = useState<SupportTicket[]>(() => {
     try {
-      const saved = localStorage.getItem(`${STORAGE_KEY}_tickets`);
+      const saved = getStorageItem(`${STORAGE_KEY}_tickets`);
       return saved ? JSON.parse(saved) : INITIAL_TICKETS;
     } catch {
       return INITIAL_TICKETS;
@@ -290,7 +320,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   // Quick Commerce Products & Categories
   const [products, setProducts] = useState<Product[]>(() => {
     try {
-      const saved = localStorage.getItem(`${STORAGE_KEY}_products`);
+      const saved = getStorageItem(`${STORAGE_KEY}_products`);
       return saved ? JSON.parse(saved) : INITIAL_PRODUCTS;
     } catch {
       return INITIAL_PRODUCTS;
@@ -299,7 +329,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
   const [categories, setCategories] = useState<Category[]>(() => {
     try {
-      const saved = localStorage.getItem(`${STORAGE_KEY}_categories`);
+      const saved = getStorageItem(`${STORAGE_KEY}_categories`);
       return saved ? JSON.parse(saved) : INITIAL_CATEGORIES;
     } catch {
       return INITIAL_CATEGORIES;
@@ -309,7 +339,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   // Cart State
   const [cart, setCart] = useState<CartItem[]>(() => {
     try {
-      const saved = localStorage.getItem(`${STORAGE_KEY}_cart`);
+      const saved = getStorageItem(`${STORAGE_KEY}_cart`);
       return saved ? JSON.parse(saved) : [];
     } catch {
       return [];
@@ -323,7 +353,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   // Saved Addresses
   const [savedAddresses, setSavedAddresses] = useState<CustomerAddress[]>(() => {
     try {
-      const saved = localStorage.getItem(`${STORAGE_KEY}_addresses`);
+      const saved = getStorageItem(`${STORAGE_KEY}_addresses`);
       return saved ? JSON.parse(saved) : INITIAL_ADDRESSES;
     } catch {
       return INITIAL_ADDRESSES;
@@ -336,7 +366,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   // Recent Searches
   const [recentSearches, setRecentSearches] = useState<string[]>(() => {
     try {
-      const saved = localStorage.getItem(`${STORAGE_KEY}_recent_searches`);
+      const saved = getStorageItem(`${STORAGE_KEY}_recent_searches`);
       return saved ? JSON.parse(saved) : ['Amul Milk', 'Maggi', 'Bananas', 'Coca Cola', 'Courier'];
     } catch {
       return ['Amul Milk', 'Maggi', 'Bananas', 'Coca Cola', 'Courier'];
@@ -393,23 +423,19 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
   // Sync state to LocalStorage
   useEffect(() => {
-    try {
-      localStorage.setItem(`${STORAGE_KEY}_orders`, JSON.stringify(orders));
-      localStorage.setItem(`${STORAGE_KEY}_services`, JSON.stringify(services));
-      localStorage.setItem(`${STORAGE_KEY}_customers`, JSON.stringify(customers));
-      localStorage.setItem(`${STORAGE_KEY}_partners`, JSON.stringify(partners));
-      localStorage.setItem(`${STORAGE_KEY}_businesses`, JSON.stringify(businesses));
-      localStorage.setItem(`${STORAGE_KEY}_customer_passes`, JSON.stringify(customerPasses));
-      localStorage.setItem(`${STORAGE_KEY}_payments`, JSON.stringify(payments));
-      localStorage.setItem(`${STORAGE_KEY}_tickets`, JSON.stringify(tickets));
-      localStorage.setItem(`${STORAGE_KEY}_products`, JSON.stringify(products));
-      localStorage.setItem(`${STORAGE_KEY}_categories`, JSON.stringify(categories));
-      localStorage.setItem(`${STORAGE_KEY}_cart`, JSON.stringify(cart));
-      localStorage.setItem(`${STORAGE_KEY}_addresses`, JSON.stringify(savedAddresses));
-      localStorage.setItem(`${STORAGE_KEY}_recent_searches`, JSON.stringify(recentSearches));
-    } catch (e) {
-      console.warn('Storage sync error', e);
-    }
+    setStorageItem(`${STORAGE_KEY}_orders`, JSON.stringify(orders));
+    setStorageItem(`${STORAGE_KEY}_services`, JSON.stringify(services));
+    setStorageItem(`${STORAGE_KEY}_customers`, JSON.stringify(customers));
+    setStorageItem(`${STORAGE_KEY}_partners`, JSON.stringify(partners));
+    setStorageItem(`${STORAGE_KEY}_businesses`, JSON.stringify(businesses));
+    setStorageItem(`${STORAGE_KEY}_customer_passes`, JSON.stringify(customerPasses));
+    setStorageItem(`${STORAGE_KEY}_payments`, JSON.stringify(payments));
+    setStorageItem(`${STORAGE_KEY}_tickets`, JSON.stringify(tickets));
+    setStorageItem(`${STORAGE_KEY}_products`, JSON.stringify(products));
+    setStorageItem(`${STORAGE_KEY}_categories`, JSON.stringify(categories));
+    setStorageItem(`${STORAGE_KEY}_cart`, JSON.stringify(cart));
+    setStorageItem(`${STORAGE_KEY}_addresses`, JSON.stringify(savedAddresses));
+    setStorageItem(`${STORAGE_KEY}_recent_searches`, JSON.stringify(recentSearches));
   }, [
     orders,
     services,
@@ -428,7 +454,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
   const setRole = (role: UserRole) => {
     setCurrentRoleState(role);
-    localStorage.setItem('quickgo_role', role);
+    setStorageItem('quickgo_role', role);
   };
 
   const addNotification = useCallback((notif: NotificationItem) => {
@@ -1321,6 +1347,28 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     updateTicketStatus(ticketId, 'RESOLVED');
   };
 
+  const createSupportTicket = (subject: string, description: string, priority: string = 'MEDIUM') => {
+    const newTicket: SupportTicket = {
+      id: `tick-${Date.now()}`,
+      ticketNumber: `TK-${Math.floor(1000 + Math.random() * 9000)}`,
+      customerId: currentCustomer?.id || 'cust-1',
+      customerName: currentCustomer?.name || 'Customer',
+      issue: subject,
+      priority: (priority.toUpperCase() as any) || 'MEDIUM',
+      status: 'OPEN',
+      createdAt: 'Just now',
+      updatedAt: 'Just now',
+      messages: [
+        {
+          sender: currentCustomer?.name || 'Customer',
+          text: description,
+          time: 'Just now',
+        },
+      ],
+    };
+    setTickets((prev) => [newTicket, ...prev]);
+  };
+
   const sendMessage = (
     orderId: string,
     text: string,
@@ -1552,19 +1600,19 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   };
 
   const resetDemoData = () => {
-    localStorage.removeItem(`${STORAGE_KEY}_orders`);
-    localStorage.removeItem(`${STORAGE_KEY}_services`);
-    localStorage.removeItem(`${STORAGE_KEY}_customers`);
-    localStorage.removeItem(`${STORAGE_KEY}_partners`);
-    localStorage.removeItem(`${STORAGE_KEY}_businesses`);
-    localStorage.removeItem(`${STORAGE_KEY}_customer_passes`);
-    localStorage.removeItem(`${STORAGE_KEY}_payments`);
-    localStorage.removeItem(`${STORAGE_KEY}_tickets`);
-    localStorage.removeItem(`${STORAGE_KEY}_products`);
-    localStorage.removeItem(`${STORAGE_KEY}_categories`);
-    localStorage.removeItem(`${STORAGE_KEY}_cart`);
-    localStorage.removeItem(`${STORAGE_KEY}_addresses`);
-    localStorage.removeItem(`${STORAGE_KEY}_recent_searches`);
+    removeStorageItem(`${STORAGE_KEY}_orders`);
+    removeStorageItem(`${STORAGE_KEY}_services`);
+    removeStorageItem(`${STORAGE_KEY}_customers`);
+    removeStorageItem(`${STORAGE_KEY}_partners`);
+    removeStorageItem(`${STORAGE_KEY}_businesses`);
+    removeStorageItem(`${STORAGE_KEY}_customer_passes`);
+    removeStorageItem(`${STORAGE_KEY}_payments`);
+    removeStorageItem(`${STORAGE_KEY}_tickets`);
+    removeStorageItem(`${STORAGE_KEY}_products`);
+    removeStorageItem(`${STORAGE_KEY}_categories`);
+    removeStorageItem(`${STORAGE_KEY}_cart`);
+    removeStorageItem(`${STORAGE_KEY}_addresses`);
+    removeStorageItem(`${STORAGE_KEY}_recent_searches`);
 
     setOrders(INITIAL_ORDERS);
     setServices(INITIAL_SERVICES);
@@ -1672,6 +1720,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         updatePartnerStatus,
         updateTicketStatus,
         resolveSupportTicket,
+        createSupportTicket,
         sendMessage,
         startCall,
         endCall,
