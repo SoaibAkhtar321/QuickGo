@@ -3,6 +3,7 @@ import { Logo } from '../../components/ui/Logo';
 import { useApp } from '../../store/AppContext';
 import { NOIDA_LOCATIONS } from '../../data/mockData';
 import { MobileCartBar } from '../../components/commerce/MobileCartBar';
+import { SiteFooter } from '../../components/ui/SiteFooter';
 import {
   Home,
   Package,
@@ -130,7 +131,7 @@ export const CustomerLayout: React.FC<CustomerLayoutProps> = ({
   const activePass = getActivePassForCustomer(currentCustomer.id);
 
   return (
-    <div className="min-h-screen bg-[#F8F9FA] pb-32 md:pb-12 text-[#171717]">
+    <div className="min-h-screen flex flex-col bg-[#F8F9FA] text-[#171717]">
       {/* 
         Pinned Header with Header Search Bar (Blinkit Standard):
         Pinned and visible at all times across all customer tabs, both on mobile and desktop.
@@ -174,7 +175,7 @@ export const CustomerLayout: React.FC<CustomerLayoutProps> = ({
           </div>
 
           {/* Desktop Search Bar (Row 1 on md+ viewports) */}
-          <div className="hidden md:flex flex-1 max-w-md mx-3">
+          <div className="hidden md:flex flex-1 min-w-0 max-w-md mx-3">
             <button
               type="button"
               onClick={() => {
@@ -193,6 +194,18 @@ export const CustomerLayout: React.FC<CustomerLayoutProps> = ({
 
           {/* Navigation Links on Desktop */}
           <nav className="hidden lg:flex items-center gap-1.5">
+            <button
+              onClick={() => handleTabChange('home')}
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
+                selectedTab === 'home'
+                  ? 'text-red-600 bg-red-50'
+                  : 'text-neutral-600 hover:text-neutral-900 hover:bg-neutral-100'
+              }`}
+            >
+              <Home className="w-4 h-4" />
+              <span>Home</span>
+            </button>
+
             <button
               onClick={() => handleTabChange('categories')}
               className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
@@ -301,7 +314,7 @@ export const CustomerLayout: React.FC<CustomerLayoutProps> = ({
                 <span className="w-3.5 h-[2.5px] bg-neutral-900 rounded-full"></span>
                 <span className="w-3.5 h-[2.5px] bg-neutral-900 rounded-full"></span>
               </div>
-              <span className="hidden sm:inline-block text-xs font-black">
+              <span className="hidden xl:inline-block text-xs font-black">
                 Partner / Store
               </span>
             </button>
@@ -348,7 +361,7 @@ export const CustomerLayout: React.FC<CustomerLayoutProps> = ({
 
       {/* Main Screen Content */}
       <main
-        className={`max-w-7xl mx-auto w-full ${
+        className={`flex-1 max-w-7xl mx-auto w-full ${
           selectedTab === 'home'
             ? 'px-0 sm:px-6 lg:px-8 pt-0 sm:pt-6'
             : 'px-4 sm:px-6 lg:px-8 pt-4 sm:pt-6'
@@ -356,6 +369,12 @@ export const CustomerLayout: React.FC<CustomerLayoutProps> = ({
       >
         {children}
       </main>
+
+      {/* Website footer: part of the page flow; bottom padding clears the fixed mobile nav */}
+      <SiteFooter
+        onNavigate={handleTabChange}
+        className="pb-[calc(8rem+env(safe-area-inset-bottom))] lg:pb-20"
+      />
 
       {/* Sticky Mobile Fast-Cart Bottom Bar with synchronized visibility */}
       <MobileCartBar
@@ -552,9 +571,6 @@ export const CustomerLayout: React.FC<CustomerLayoutProps> = ({
             )}
           </button>
         </div>
-
-        {/* iOS Home Indicator Bar */}
-        <div className="w-32 h-1 bg-neutral-300 rounded-full mx-auto mt-2 mb-0.5" />
       </nav>
     </div>
   );

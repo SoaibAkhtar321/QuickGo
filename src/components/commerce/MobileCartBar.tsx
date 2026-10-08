@@ -17,7 +17,9 @@ export const MobileCartBar: React.FC<MobileCartBarProps> = ({ onOpenCart, isFoot
   return (
     <div
       className={`fixed left-0 right-0 z-40 px-4 sm:px-6 pointer-events-none flex justify-center transition-all duration-300 ease-in-out ${
-        isFooterVisible ? 'bottom-20 md:bottom-6' : 'bottom-4 md:bottom-6'
+        isFooterVisible
+          ? 'bottom-[calc(5rem+env(safe-area-inset-bottom))] lg:bottom-6'
+          : 'bottom-[calc(1rem+env(safe-area-inset-bottom))] lg:bottom-6'
       }`}
     >
       <div className="w-full max-w-sm pointer-events-auto">

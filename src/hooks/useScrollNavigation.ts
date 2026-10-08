@@ -15,6 +15,8 @@ export interface UseScrollNavigationOptions {
   resetTrigger?: unknown;
   /** Initial visibility of the bottom nav (default: true) */
   initialBottomNavVisible?: boolean;
+  /** Hide the bottom nav on downward scroll (default: false — nav stays persistent) */
+  autoHideBottomNav?: boolean;
 }
 
 export interface UseScrollNavigationReturn {
@@ -66,6 +68,7 @@ export function useScrollNavigation(
     bottomThreshold = 40,
     resetTrigger,
     initialBottomNavVisible = true,
+    autoHideBottomNav = false,
   } = options;
 
   const [scrollDirection, setScrollDirection] = useState<ScrollDirection>('idle');
@@ -122,7 +125,7 @@ export function useScrollNavigation(
           // 3. Upward scroll -> Reveal immediately
           setScrollDirection('up');
           setIsBottomNavVisible(true);
-        } else if (delta > downThreshold) {
+        } else if (autoHideBottomNav && delta > downThreshold) {
           // 4. Downward scroll -> Hide bottom navigation
           setScrollDirection('down');
           setIsBottomNavVisible(false);
@@ -140,7 +143,7 @@ export function useScrollNavigation(
       window.removeEventListener('scroll', handleScroll);
       window.removeEventListener('touchmove', handleScroll);
     };
-  }, [downThreshold, upThreshold, topThreshold, bottomThreshold]);
+  }, [downThreshold, upThreshold, topThreshold, bottomThreshold, autoHideBottomNav]);
 
   // Reset to visible whenever resetTrigger (e.g. tab change or route change) changes
   useEffect(() => {
@@ -161,7 +164,7 @@ export function useScrollNavigation(
       : 'border-b border-neutral-200 shadow-md'
   }`;
 
-  const bottomNavClasses = `md:hidden fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-neutral-200/90 shadow-2xl pt-2 pb-1.5 px-3 transition-transform duration-300 ease-in-out ${
+  const bottomNavClasses = `lg:hidden fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-neutral-200/90 shadow-2xl pt-2 px-3 pb-[max(0.5rem,env(safe-area-inset-bottom))] transition-transform duration-300 ease-in-out ${
     isBottomNavVisible
       ? 'translate-y-0 opacity-100 pointer-events-auto'
       : 'translate-y-full opacity-0 pointer-events-none'
